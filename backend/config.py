@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     DATABASE_NAME: str = "finance_dashboard"
     SECRET_KEY: str = "supersecretkey"
     ALLOWED_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000"
+    # Allow all Vercel preview/production domains by default; can be overridden via env
+    ALLOWED_ORIGIN_REGEX: str | None = "https://.*vercel\\.app"
 
     @property
     def allowed_origins_list(self) -> list[str]:
