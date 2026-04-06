@@ -1,4 +1,10 @@
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? ""
+function normalizeBaseUrl(raw?: string | null): string {
+  if (!raw) return ""
+  const withProtocol = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`
+  return withProtocol.replace(/\/+$/, "")
+}
+
+const BASE = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_URL)
 
 function authHeaders(): Record<string, string> {
   if (typeof window === "undefined") return {}
@@ -7,7 +13,8 @@ function authHeaders(): Record<string, string> {
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`
+  const res = await fetch(`${BASE}${normalizedPath}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
